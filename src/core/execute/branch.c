@@ -55,7 +55,12 @@ void execute_branch(cpu_t *arch, decoded_instruction_t *d) {
         break;
 
     default:
-        cpu_raise_exception(arch, CAUSE_ILL_INSTR);
+        cpu_raise_exception(
+            arch,
+            CAUSE_ILL_INSTR,
+            arch->pc,
+            0
+        ); 
         return;
     }
 
@@ -97,14 +102,24 @@ void execute_jump(cpu_t *arch,
             break;
 
         default:
-            cpu_raise_exception(arch, CAUSE_ILL_INSTR);
+            cpu_raise_exception(
+                arch,
+                CAUSE_ILL_INSTR,
+                arch->pc,
+                0
+            );
             return;
         }
 
         break;
 
     default:
-        cpu_raise_exception(arch, CAUSE_ILL_INSTR);
+        cpu_raise_exception(
+            arch,
+            CAUSE_ILL_INSTR,
+            arch->pc,
+            0
+        );
         return;
     }
 

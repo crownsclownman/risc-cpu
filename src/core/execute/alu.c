@@ -34,7 +34,12 @@ void execute_special_alu(cpu_t *arch, decoded_instruction_t *d) {
         break;
 
     default:
-        cpu_raise_exception(arch, CAUSE_ILL_INSTR);
+        cpu_raise_exception(
+            arch,
+            CAUSE_ILL_INSTR,
+            arch->pc,
+            0
+        );        
         break;
     }
 }
@@ -75,7 +80,12 @@ void execute_immediate_alu(cpu_t *arch, decoded_instruction_t *d) {
         break;
 
     default:
-        cpu_raise_exception(arch, CAUSE_ILL_INSTR);
+        cpu_raise_exception(
+            arch,
+            CAUSE_ILL_INSTR,
+            arch->pc,
+            0
+        );
         break;
     }
 }

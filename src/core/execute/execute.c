@@ -92,7 +92,12 @@ void execute(cpu_t *arch, decoded_instruction_t *d) {
             break;
 
         default:
-            cpu_raise_exception(arch, CAUSE_ILL_INSTR);
+            cpu_raise_exception(
+                arch,
+                CAUSE_ILL_INSTR,
+                arch->pc,
+                0
+            );
             break;
         }
         break;
@@ -141,7 +146,12 @@ void execute(cpu_t *arch, decoded_instruction_t *d) {
 
     default:
         fprintf(stderr, "illegal instruction: opcode=0x%02X funct=0x%02X\n", d->opcode, d->funct);
-        cpu_raise_exception(arch, CAUSE_ILL_INSTR);
+        cpu_raise_exception(
+            arch,
+            CAUSE_ILL_INSTR,
+            arch->pc,
+            0
+        );
         break;
     }
 
@@ -156,32 +166,4 @@ void execute(cpu_t *arch, decoded_instruction_t *d) {
     if (!arch->is_halted && arch->pc == old_pc) {
         arch->pc += 4;
     }
-}
-
-/*
- * Enter CPU exception handler.
- *
- * Saves current execution state,
- * disables interrupts,
- * switches CPU into kernel mode,
- * and transfers execution to exception vector.
- *
- * cause:
- *      Architecture-defined exception code.
- */
-
-void cpu_raise_exception(cpu_t *arch, uint32_t cause) {
-    if (arch->sr & SR_EXL)
-    {
-        return;
-    }
-
-    arch->cause = cause;
-    arch->epc   = arch->pc + 4;
-
-    arch->sr |= SR_EXL;
-    arch->sr |= SR_KM;
-    arch->sr &= ~SR_IE;
-
-    arch->pc = EXCEPTION_VECTOR;
 }

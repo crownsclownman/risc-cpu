@@ -45,8 +45,13 @@ void execute_atomic(cpu_t *arch, decoded_instruction_t *d) {
         break;
 
     default:
-        cpu_raise_exception(arch, CAUSE_ILL_INSTR);
-        return;
+        cpu_raise_exception(
+            arch,
+            CAUSE_ILL_INSTR,
+            arch->pc,
+            0
+        );
+       return;
     }
 
     arch->pc += 4;

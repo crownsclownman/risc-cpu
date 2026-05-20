@@ -19,7 +19,12 @@ void execute_system(cpu_t *arch, decoded_instruction_t *d) {
             break;
 
         default:
-            cpu_raise_exception(arch, CAUSE_ILL_INSTR);
+            cpu_raise_exception(
+                arch,
+                CAUSE_ILL_INSTR,
+                arch->pc,
+                0
+            );
             return;
         }
 
@@ -29,14 +34,25 @@ void execute_system(cpu_t *arch, decoded_instruction_t *d) {
     }
 
     if (d->opcode != OP_SPECIAL) {
-        cpu_raise_exception(arch, CAUSE_ILL_INSTR);
+        cpu_raise_exception(
+            arch,
+            CAUSE_ILL_INSTR,
+            arch->pc,
+            0
+        );
         return;
     }
 
     switch (d->funct) {
 
     case FUNCT_SYSCALL:
-        cpu_raise_exception(arch, CAUSE_SYSCALL);
+        cpu_raise_exception(
+            arch,
+            CAUSE_SYSCALL,
+            arch->pc + 4,
+            0
+        );
+
         return;
 
     case FUNCT_ERET:
@@ -62,9 +78,14 @@ void execute_system(cpu_t *arch, decoded_instruction_t *d) {
         break;
 
     default:
-        cpu_raise_exception(arch, CAUSE_ILL_INSTR);
+       cpu_raise_exception(
+            arch,
+            CAUSE_ILL_INSTR,
+            arch->pc,
+            0
+        );
         return;
-    }
+      }
 
     arch->pc += 4;
 }

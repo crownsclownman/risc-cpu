@@ -65,8 +65,7 @@ static void uart_setup_terminal(void) {
     uart_termios_initialized = 1;
 }
 
-static void uart_poll_input(uart_t *uart)
-{
+static void uart_poll_input(uart_t *uart) {
     unsigned char c;
     ssize_t n;
 
@@ -186,6 +185,7 @@ static void uart_write16(bus_device_t *dev, uint32_t offset, uint16_t value) {
  */
 
 static void uart_write32(bus_device_t *dev, uint32_t offset, uint32_t value) {
+    printf("UART WRITE offset=0x%X value=0x%X\n", offset, value);
     uart_write8(dev, offset, (uint8_t)(value & 0xFF));
 }
 

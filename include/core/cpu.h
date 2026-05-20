@@ -85,6 +85,7 @@
 
 typedef struct {
     uint32_t vpn;
+    uint32_t pfn;
     uint8_t  valid;
     uint8_t  write;
     uint8_t  rwx;

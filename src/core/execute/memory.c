@@ -56,7 +56,12 @@ void execute_loadstore(cpu_t *arch, decoded_instruction_t *d) {
         break;
 
     default:
-        cpu_raise_exception(arch, CAUSE_ILL_INSTR);
+        cpu_raise_exception(
+            arch,
+            CAUSE_ILL_INSTR,
+            arch->pc,
+            0
+        );
         return;
     }
 

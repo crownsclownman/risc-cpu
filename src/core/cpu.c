@@ -51,7 +51,7 @@ static void cpu_handle_interrupts(cpu_t *arch) {
     if (arch->mtime >= arch->mtimecmp) {
         if ((arch->sr & SR_IE) && !(arch->sr & SR_EXL)) {
             arch->waiting = 0;
-            cpu_raise_interrupt(arch, CAUSE_INT_TIMER);
+            cpu_raise_interrupt(arch, CAUSE_TIMER_INT);
         }
     }
 }
@@ -307,7 +307,7 @@ void tlb_write_random(cpu_t *arch) {
     arch->tlb[idx].vpn   = arch->entry_hi >> 12;
     arch->tlb[idx].pfn   = arch->entry_lo >> 12;
     arch->tlb[idx].valid = (arch->entry_lo >> 1) & 1;
-    arch->tlb[idx].dirty = (arch->entry_lo >> 2) & 1;
+    arch->tlb[idx].write = (arch->entry_lo >> 2) & 1;
     arch->tlb[idx].rwx   = (arch->entry_lo >> 3) & 7;
     arch->tlb[idx].user  = (arch->entry_lo >> 6) & 1;
 
@@ -328,7 +328,7 @@ void tlb_read(cpu_t *arch) {
     arch->entry_hi = e->vpn << 12;
     arch->entry_lo = (e->pfn  << 12)
                    | (e->valid << 1)
-                   | (e->dirty << 2)
+                   | (e->write << 2)
                    | ((uint32_t)e->rwx << 3)
                    | ((uint32_t)e->user << 6);
 }
@@ -407,8 +407,8 @@ uint32_t tlb_translate(cpu_t *arch, uint32_t vaddr, int write) {
             continue;
 
         /* Проверка прав на запись */
-        if (write && !e->dirty) {
-            cpu_raise_exception(arch, CAUSE_TLB_MISS, arch->pc, vaddr);
+        if (write && !e->write) {
+            cpu_raise_exception(arch, write ? CAUSE_TLB_STORE : CAUSE_TLB_LOAD, arch->pc, vaddr);
             return 0;
         }
 
@@ -416,10 +416,14 @@ uint32_t tlb_translate(cpu_t *arch, uint32_t vaddr, int write) {
     }
 
     /* TLB miss - ядро должно заполнить запись через TLBWR */
-    arch->badvaddr = vaddr;
     arch->entry_hi = vaddr & 0xFFFFF000u;
-    arch->cause    = CAUSE_TLB_MISS;
-    arch->epc      = arch->pc;
-    arch->sr      |= SR_KM;
+
+    cpu_raise_exception(
+        arch,
+        write ? CAUSE_TLB_STORE : CAUSE_TLB_LOAD,
+        arch->pc,
+        vaddr
+    );
+
     return 0;
 }
