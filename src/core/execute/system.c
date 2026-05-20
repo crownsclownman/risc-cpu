@@ -36,15 +36,17 @@ void execute_system(cpu_t *arch, decoded_instruction_t *d) {
     switch (d->funct) {
 
     case FUNCT_SYSCALL:
-        arch->epc = arch->pc + 4;
         cpu_raise_exception(arch, CAUSE_SYSCALL);
         return;
 
     case FUNCT_ERET:
-        arch->pc = arch->epc;
+        arch->sr &= ~SR_EXL;
         arch->sr &= ~SR_KM;
-        return;
+        arch->sr |= SR_IE;
 
+        arch->pc = arch->epc;
+        return;
+    
     case FUNCT_WFI:
         arch->waiting = 1;
         break;

@@ -40,18 +40,26 @@
  * Exception cause codes.
  */
 
-#define CAUSE_INT       0   /* Hardware interrupt        */
-#define CAUSE_SYSCALL   8   /* SYSCALL instruction       */
-#define CAUSE_ILL_INSTR 10  /* Reserved/illegal instr    */
-#define CAUSE_DIV_ZERO  15  /* Division by zero          */
-#define CAUSE_TLB_MISS  2   /* TLB miss (load/store)     */
-#define CAUSE_BUS_ERROR 7   /* Bus error                 */
+#define CAUSE_TLB_LOAD      2
+#define CAUSE_TLB_STORE     3
+#define CAUSE_PAGE_PROT     4
+#define CAUSE_ALIGN         5
+#define CAUSE_BUS_ERROR     7
+#define CAUSE_SYSCALL       8
+#define CAUSE_BREAKPOINT    9
+#define CAUSE_ILL_INSTR     10
+#define CAUSE_PRIV_INSTR    11
+#define CAUSE_DIV_ZERO      15
+#define CAUSE_TIMER_INT     16
 
 /*
  * Number of TLB entries.
  */
 
 #define TLB_ENTRIES 32
+#define PAGE_R  (1u << 0)
+#define PAGE_W  (1u << 1)
+#define PAGE_X  (1u << 2)
 
 /*
  * Translation Lookaside Buffer entry.
@@ -65,7 +73,7 @@
  * valid:
  *      Entry validity flag.
  *
- * dirty:
+ * write:
  *      Writable page flag.
  *
  * rwx:
@@ -76,12 +84,11 @@
  */
 
 typedef struct {
-    uint32_t vpn;       /* Virtual Page Number  (vaddr >> 12) */
-    uint32_t pfn;       /* Physical Frame Number (paddr >> 12) */
+    uint32_t vpn;
     uint8_t  valid;
-    uint8_t  dirty;     /* страница была записана               */
-    uint8_t  rwx;       /* биты доступа: Read/Write/Execute     */
-    uint8_t  user;      /* доступна из user-mode                */
+    uint8_t  write;
+    uint8_t  rwx;
+    uint8_t  user;
 } tlb_entry_t;
 
 /*
@@ -153,6 +160,18 @@ void     cpu_reset(cpu_t *arch);
  */
 
 void     cpu_step(cpu_t *arch);
+
+/*
+ * Raise CPU exception
+ */
+
+void cpu_raise_exception(cpu_t *arch, uint32_t cause, uint32_t epc, uint32_t badvaddr);
+
+/*
+ * Raise CPU interrupt
+ */
+
+void cpu_raise_interrupt(cpu_t *arch, uint32_t cause);
 
 /*
  * Print complete CPU state for debugging.

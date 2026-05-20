@@ -171,9 +171,15 @@ void execute(cpu_t *arch, decoded_instruction_t *d) {
  */
 
 void cpu_raise_exception(cpu_t *arch, uint32_t cause) {
-    arch->cause = cause;
-    arch->epc   = arch->pc;
+    if (arch->sr & SR_EXL)
+    {
+        return;
+    }
 
+    arch->cause = cause;
+    arch->epc   = arch->pc + 4;
+
+    arch->sr |= SR_EXL;
     arch->sr |= SR_KM;
     arch->sr &= ~SR_IE;
 

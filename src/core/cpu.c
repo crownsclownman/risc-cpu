@@ -29,9 +29,6 @@
  * to EXCEPTION_VECTOR.
  */
 
-
-
-
 #include "core/cpu.h"
 #include "core/decode.h"
 #include "core/execute.h"
@@ -52,18 +49,9 @@ static void cpu_handle_interrupts(cpu_t *arch) {
     arch->mtime++;
 
     if (arch->mtime >= arch->mtimecmp) {
-
-        if (arch->sr & SR_IE) {
-
-            arch->epc   = arch->pc;
-            arch->cause = CAUSE_INT;
-
-            arch->sr |= SR_KM;
-            arch->sr &= ~SR_IE;
-
-            arch->pc = EXCEPTION_VECTOR;
-
+        if ((arch->sr & SR_IE) && !(arch->sr & SR_EXL)) {
             arch->waiting = 0;
+            cpu_raise_interrupt(arch, CAUSE_INT_TIMER);
         }
     }
 }
@@ -105,15 +93,43 @@ void cpu_reset(cpu_t *arch) {
  */
 
 void cpu_step(cpu_t *arch) {
+
+    if (arch->is_halted)
+        return;
+
+    cpu_handle_interrupts(arch);
+
+    if (arch->waiting)
+        return;
+
     decoded_instruction_t d;
     uint32_t instr;
 
-    instr = cpu_read32(arch, arch->pc);
+    instr = cpu_fetch32(arch, arch->pc);
 
     decode(instr, &d);
     execute(arch, &d);
 
-    cpu_handle_interrupts(arch);
+}
+
+void cpu_raise_exception(cpu_t *arch, uint32_t cause, uint32_t epc, uint32_t badvaddr) {
+    if (arch->sr & SR_EXL) {
+        return;
+    }
+
+    arch->cause    = cause;
+    arch->epc      = epc;
+    arch->badvaddr = badvaddr;
+
+    arch->sr |= SR_EXL;
+    arch->sr |= SR_KM;
+    arch->sr &= ~SR_IE;
+
+    arch->pc = EXCEPTION_VECTOR;
+}
+
+void cpu_raise_interrupt(cpu_t *arch, uint32_t cause) {
+    cpu_raise_exception(arch, cause, arch->pc, 0);
 }
 
 /*
@@ -392,10 +408,7 @@ uint32_t tlb_translate(cpu_t *arch, uint32_t vaddr, int write) {
 
         /* Проверка прав на запись */
         if (write && !e->dirty) {
-            arch->badvaddr = vaddr;
-            arch->cause    = CAUSE_TLB_MISS;
-            arch->epc      = arch->pc;
-            arch->sr      |= SR_KM;
+            cpu_raise_exception(arch, CAUSE_TLB_MISS, arch->pc, vaddr);
             return 0;
         }
 
