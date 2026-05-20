@@ -71,7 +71,17 @@ typedef struct {
 #define CSR_MTIMECMP_HI 10
 
 void     cpu_reset(cpu_t *arch);
+void     cpu_step(cpu_t *arch);
 void     cpu_dump_state(cpu_t *arch);
+
+uint8_t  cpu_read8(cpu_t *arch, uint32_t addr);
+uint16_t cpu_read16(cpu_t *arch, uint32_t addr);
+uint32_t cpu_read32(cpu_t *arch, uint32_t addr);
+
+void     cpu_write8(cpu_t *arch, uint32_t addr, uint8_t value);
+void     cpu_write16(cpu_t *arch, uint32_t addr, uint16_t value);
+void     cpu_write32(cpu_t *arch, uint32_t addr, uint32_t value);
+uint32_t cpu_fetch32(cpu_t *arch, uint32_t addr);
 
 uint32_t csr_read (cpu_t *arch, uint8_t csr);
 void     csr_write(cpu_t *arch, uint8_t csr, uint32_t value);
@@ -82,4 +92,4 @@ void     tlb_probe       (cpu_t *arch);
 void     tlb_invalidate  (cpu_t *arch, uint32_t vaddr);
 uint32_t tlb_translate   (cpu_t *arch, uint32_t vaddr, int write);
 
-#endif /* CPU_H */
+#endif

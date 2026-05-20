@@ -13,6 +13,7 @@
 
 typedef struct {
     uint32_t status;
+    uint8_t rx_data
 } uart_t;
 
 void uart_init(bus_device_t *dev, uart_t *uart, uint32_t base);

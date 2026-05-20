@@ -1,4 +1,5 @@
 #include "core/execute.h"
+#include "core/execute/internal.h"
 #include "core/bus.h"
 #include "core/isa.h"
 
@@ -261,55 +262,55 @@ void execute(cpu_t *arch, decoded_instruction_t *d) {
 
     case OP_LB:
         ea = (uint32_t)(srs + simm);
-        reg_write(arch, d->rt, (uint32_t)(int32_t)(int8_t)bus_read8(arch->bus, ea));
+        reg_write(arch, d->rt, (uint32_t)(int32_t)(int8_t)cpu_read8(arch, ea));
         break;
 
     case OP_LH:
         ea = (uint32_t)(srs + simm);
-        reg_write(arch, d->rt, (uint32_t)(int32_t)(int16_t)bus_read16(arch->bus, ea));
+        reg_write(arch, d->rt, (uint32_t)(int32_t)(int16_t)cpu_read16(arch, ea));
         break;
 
     case OP_LW:
         ea = (uint32_t)(srs + simm);
-        reg_write(arch, d->rt, bus_read32(arch->bus, ea));
+        reg_write(arch, d->rt, cpu_read32(arch, ea));
         break;
 
     case OP_LBU:
         ea = (uint32_t)(srs + simm);
-        reg_write(arch, d->rt, (uint32_t)bus_read8(arch->bus, ea));
+        reg_write(arch, d->rt, (uint32_t)cpu_read8(arch, ea));
         break;
 
     case OP_LHU:
         ea = (uint32_t)(srs + simm);
-        reg_write(arch, d->rt, (uint32_t)bus_read16(arch->bus, ea));
+        reg_write(arch, d->rt, (uint32_t)cpu_read16(arch, ea));
         break;
 
     case OP_SB:
         ea = (uint32_t)(srs + simm);
-        bus_write8(arch->bus, ea, (uint8_t)(rt & 0xFF));
+        cpu_write8(arch, ea, (uint8_t)(rt & 0xFF));
         break;
 
     case OP_SH:
         ea = (uint32_t)(srs + simm);
-        bus_write16(arch->bus, ea, (uint16_t)(rt & 0xFFFF));
+        cpu_write16(arch, ea, (uint16_t)(rt & 0xFFFF));
         break;
 
     case OP_SW:
         ea = (uint32_t)(srs + simm);
-        bus_write32(arch->bus, ea, rt);
+        cpu_write32(arch, ea, rt);
         break;
 
     case OP_LL:
         ea = (uint32_t)(srs + simm);
         arch->lladdr  = ea;
         arch->ll_valid = 1;
-        reg_write(arch, d->rt, bus_read32(arch->bus, ea));
+        reg_write(arch, d->rt, cpu_read32(arch, ea));
         break;
 
     case OP_SC:
         ea = (uint32_t)(srs + simm);
         if (arch->ll_valid && arch->lladdr == ea) {
-            bus_write32(arch->bus, ea, rt);
+            cpu_write32(arch, ea, rt);
             reg_write(arch, d->rt, 1u);
         } else {
             reg_write(arch, d->rt, 0u);
