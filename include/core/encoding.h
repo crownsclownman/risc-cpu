@@ -1,3 +1,12 @@
+/*
+ * encoding.h
+ *
+ * Instruction encoding helper macros.
+ *
+ * Provides fast extraction of instruction
+ * fields directly from raw instruction words.
+ */
+
 #ifndef ENCODING_H
 #define ENCODING_H
 

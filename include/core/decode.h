@@ -1,10 +1,25 @@
+/*
+ * decode.h
+ *
+ * Instruction decoding subsystem.
+ *
+ * Defines internal decoded instruction
+ * representation used by execution engine.
+ */
+
 #ifndef DECODE_H
 #define DECODE_H
 
 #include <stdint.h>
 
-typedef struct decoded_instruction_t
-{
+/*
+ * Decoded instruction representation.
+ *
+ * Stores extracted instruction fields
+ * for execution subsystem.
+ */
+
+typedef struct decoded_instruction_t {
     uint32_t raw;
 
     uint32_t opcode;
@@ -20,6 +35,10 @@ typedef struct decoded_instruction_t
 
     uint32_t target;
 } decoded_instruction_t;
+
+/*
+ * Decode raw instruction word.
+ */
 
 void decode(uint32_t instr, decoded_instruction_t *d);
 

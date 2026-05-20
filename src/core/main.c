@@ -73,6 +73,7 @@ int main(int argc, char **argv) {
 
     const char *bin_path  = NULL;
     uint32_t    load_addr = ROM_BASE;
+    uint32_t    load_limit= ROM_SIZE;
     uint32_t    start_pc  = EXCEPTION_VECTOR;   /* 0x1FC00000 */
     uint64_t    max_insns = 0;                  /* 0 = без лимита */
     int         trace     = 0;

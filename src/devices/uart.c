@@ -25,8 +25,12 @@
 
 #include "devices/uart.h"
 
+#include <fcntl.h>
 #include <stdio.h>
+#include <stdlib.h>
+#include <unistd.h>
 #include <string.h>
+#include <termios.h>
 
 static struct termios uart_old_termios;
 static int uart_termios_initialized = 0;
@@ -99,7 +103,7 @@ static uint8_t uart_read8(bus_device_t *dev, uint32_t offset) {
     case UART_REG_STATUS:
         return (uint8_t)uart->status;
     case UART_REG_DATA:
-        urat->status &= ~UART_STATUS_RX_READY;
+        uart->status &= ~UART_STATUS_RX_READY;
         return uart->rx_data;
 
     default:
