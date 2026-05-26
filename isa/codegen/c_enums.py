@@ -13,6 +13,7 @@ import os
 sys.path.insert(0, os.path.join(os.path.dirname(__file__), "..", ".."))
 
 import isa.defs
+from isa.codegen import generator
 from isa.core.registry import INSTRUCTIONS
 from isa.core.enums    import FMT_R, FMT_PSEUDO
 
@@ -118,13 +119,13 @@ def gen_header() -> str:
     ]
     return "\n".join(parts) + "\n"
 
-if __name__ == "__main__":
-    out = gen_header()
 
-    if len(sys.argv) > 1:
-        path = sys.argv[1]
-        with open(path, "w") as f:
-            f.write(out)
-        print(f"[codegen] записано: {path}")
-    else:
-        print(out)
+@generator("c_enums")
+def run(out_dir: str) -> None:
+    content  = gen_header()
+    out_path = os.path.join(out_dir, "c_enums.h")
+    with open(out_path, "w") as f:
+        f.write(content)
+    print(f"[c_enums] written to {out_path}")
+ 
+
