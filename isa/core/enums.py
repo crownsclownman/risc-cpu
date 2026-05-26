@@ -1,0 +1,4 @@
+FMT_R = "R"
+FMT_I = "I"
+FMT_J = "J"
+FMT_PSEUDO = "PSEUDO"
