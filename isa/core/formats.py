@@ -1,4 +1,5 @@
 from .fields import field
+from .codec import encode, decode
 
 R_FORMAT = [
     field("opcode", 26, 6),
@@ -20,3 +21,26 @@ J_FORMAT = [
     field("opcode", 26, 6),
     field("target",  0, 26),
 ]
+
+def encode_r(values):
+    return encode(R_FORMAT, values)
+
+
+def decode_r(instr):
+    return decode(R_FORMAT, instr)
+
+
+def encode_i(values):
+    return encode(I_FORMAT, values)
+
+
+def decode_i(instr):
+    return decode(I_FORMAT, instr)
+
+
+def encode_j(values):
+    return encode(J_FORMAT, values)
+
+
+def decode_j(instr):
+    return decode(J_FORMAT, instr)

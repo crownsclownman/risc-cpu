@@ -109,7 +109,6 @@ void cpu_step(cpu_t *arch) {
 
     decode(instr, &d);
     execute(arch, &d);
-
 }
 
 void cpu_raise_exception(cpu_t *arch, uint32_t cause, uint32_t epc, uint32_t badvaddr) {
