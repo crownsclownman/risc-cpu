@@ -1,17 +1,52 @@
-from isa.core import *
+from ..core.instruction import instr
+from ..core.operands   import reg, label
+from ..core.formats    import I_FORMAT
+from ..core.enums      import FMT_I
 
 instr(
     mnemonic = "beq",
+    fmt      = FMT_I,
+    opcode   = 0x04,
+    operands = [reg("rs"), reg("rt"), label("offset")],
+    encoding = I_FORMAT,
+)
 
-    fmt = FMT_I,
+instr(
+    mnemonic = "bne",
+    fmt      = FMT_I,
+    opcode   = 0x05,
+    operands = [reg("rs"), reg("rt"), label("offset")],
+    encoding = I_FORMAT,
+)
 
-    opcode = 0x04,
+instr(
+    mnemonic = "blt",
+    fmt      = FMT_I,
+    opcode   = 0x06,
+    operands = [reg("rs"), reg("rt"), label("offset")],
+    encoding = I_FORMAT,
+)
 
-    operands = [
-        reg("rs"),
-        reg("rt"),
-        label("target")
-    ],
+instr(
+    mnemonic = "bge",
+    fmt      = FMT_I,
+    opcode   = 0x07,
+    operands = [reg("rs"), reg("rt"), label("offset")],
+    encoding = I_FORMAT,
+)
 
-    encoding = I_FORMAT
+instr(
+    mnemonic = "bltu",
+    fmt      = FMT_I,
+    opcode   = 0x16,
+    operands = [reg("rs"), reg("rt"), label("offset")],
+    encoding = I_FORMAT,
+)
+
+instr(
+    mnemonic = "bgeu",
+    fmt      = FMT_I,
+    opcode   = 0x17,
+    operands = [reg("rs"), reg("rt"), label("offset")],
+    encoding = I_FORMAT,
 )
