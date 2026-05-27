@@ -1,5 +1,5 @@
 from ..core.instruction import instr
-from ..core.operands   import reg, imm
+from ..core.operands   import reg, imm, shamt
 from ..core.formats    import R_FORMAT, I_FORMAT
 from ..core.enums      import FMT_R, FMT_I
 
@@ -80,7 +80,7 @@ instr(
     fmt      = FMT_R,
     opcode   = 0x00,
     funct    = 0x00,
-    operands = [reg("rd"), reg("rt"), imm("shamt", 5)],
+    operands = [reg("rd"), reg("rt"), shamt()],
     encoding = R_FORMAT,
 )
 
@@ -89,7 +89,7 @@ instr(
     fmt      = FMT_R,
     opcode   = 0x00,
     funct    = 0x02,
-    operands = [reg("rd"), reg("rt"), imm("shamt", 5)],
+    operands = [reg("rd"), reg("rt"), shamt()],
     encoding = R_FORMAT,
 )
 
@@ -98,7 +98,7 @@ instr(
     fmt      = FMT_R,
     opcode   = 0x00,
     funct    = 0x03,
-    operands = [reg("rd"), reg("rt"), imm("shamt", 5)],
+    operands = [reg("rd"), reg("rt"), shamt()],
     encoding = R_FORMAT,
 )
 

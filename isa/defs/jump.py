@@ -1,5 +1,5 @@
 from ..core.instruction import instr
-from ..core.operands   import reg, label
+from ..core.operands   import reg, jtarget
 from ..core.formats    import J_FORMAT, R_FORMAT
 from ..core.enums      import FMT_J, FMT_R
 
@@ -7,7 +7,7 @@ instr(
     mnemonic = "j",
     fmt      = FMT_J,
     opcode   = 0x02,
-    operands = [label("target")],
+    operands = [jtarget()],
     encoding = J_FORMAT,
 )
 
@@ -15,7 +15,7 @@ instr(
     mnemonic = "jal",
     fmt      = FMT_J,
     opcode   = 0x03,
-    operands = [label("target")],
+    operands = [jtarget()],
     encoding = J_FORMAT,
 )
 

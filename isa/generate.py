@@ -32,7 +32,7 @@ def main() -> None:
         "generators",
         nargs="*",
         metavar="NAME",
-        help="Имена генераторов (по умолчанию — все)",
+        help="Имена генераторов (по умолчанию - все)",
     )
     parser.add_argument(
         "--out-dir",

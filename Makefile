@@ -1,39 +1,21 @@
 CC = gcc
 
-CFLAGS = -Wall \
-          -Wextra \
-          -pedantic \
-          -Iinclude
-
-LDFLAGS =
+CFLAGS = -Wall -Wextra -pedantic -Iinclude
 
 TARGET = emu
 
-SRC_DIR = src
+LIBS = \
+    src/core/libcore.a \
+    src/machine/libmachine.a \
+    src/devices/libdevices.a \
+#    src/runtime/libruntime.a
 
-SRCS = \
-    $(wildcard $(SRC_DIR)/core/*.c) \
-    $(wildcard $(SRC_DIR)/core/execute/*.c) \
-    $(wildcard $(SRC_DIR)/machine/*.c) \
-    $(wildcard $(SRC_DIR)/devices/*.c)
-
-OBJS = $(SRCS:.c=.o)
-
-all: $(TARGET)
-
-$(TARGET): $(OBJS)
-	$(CC) $(OBJS) -o $(TARGET) $(LDFLAGS)
-
-%.o: %.c
-	$(CC) $(CFLAGS) -c $< -o $@
+all:
+	$(MAKE) -C src
+	$(CC) $(LIBS) -o $(TARGET)
 
 clean:
-	rm -f $(OBJS)
+	$(MAKE) -C src clean
 	rm -f $(TARGET)
 
-rebuild: clean all
-
-run: $(TARGET)
-	./$(TARGET)
-
-.PHONY: all clean rebuild run
+.PHONY: all clean
